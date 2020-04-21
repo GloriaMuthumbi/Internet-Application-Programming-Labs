@@ -1,13 +1,14 @@
 <?php
-	include "crud.php";
-	class User implements Crud;
+    include "Crud.php";
+    include_once "DBConnector.php";
+
+	class user implements Crud{
 		private $user_id;
 		private $first_name;
 		private $last_name;
 		private $city_name;
 		
-		
-		function __construct($first_name, $last_name, &city_name){
+		function __construct($first_name, $last_name, $city_name){
 			$this->first_name=$first_name;
 			$this->last_name=$last_name;
 			$this->city_name=$city_name;
@@ -23,6 +24,9 @@
             $fn = $this->first_name;
             $ln = $this->$last_name;
             $city = $this->$city_name;
+
+            $con = new DBConnector;
+
             $res = mysql_query("INSERT INTO user(first_name, last_name, user_city) VALUES('$fn, $ln, $city)") or die("Error " . mysql_error());
             return $res;
         }

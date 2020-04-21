@@ -10,22 +10,21 @@ if(isset($_POST['btn-save'])){
     $city = $_POST['city_name'];
 
     $user = new User($first_name,$last_name,$city);
-    $res = $user->save();
-
-    if($res){
-        echo " Record Saved Successfully!!"
-    }else{
-        echo "Error! Record not saved!"
-    }
-}
-?>
+	$res = $user->save();
+	
+	if($res){
+		echo "Save operation was successful";
+	}else{
+		echo "An error occured!";
+	}
+}?>
 <html>
 	<head>
 		<title>Title goes here</title>
 	</head>
 	<body>
-		<form method="post">
-			<table align="center">
+		<form method="post" action="<?=$_SERVER['PHP_SELF']?>">
+			<table alignment="center">
 				<tr>
 					<td><input type="text" name="first_name" required placeholder="First Name" /></td>
 				</tr>
