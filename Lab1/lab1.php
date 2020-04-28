@@ -16,13 +16,15 @@ if(isset($_POST['btn-save'])){
 		echo "An error occured!";
 	}
 }?>
+<!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<title>Title goes here</title>
 	</head>
 	<body>
-		<form method="post" action="<?=$_SERVER['PHP_SELF']?>">
-			<table alignment="center">
+		<form method="post">
+			<table align="center">
 				<tr>
 					<td><input type="text" name="first_name" required placeholder="First Name" /></td>
 				</tr>
