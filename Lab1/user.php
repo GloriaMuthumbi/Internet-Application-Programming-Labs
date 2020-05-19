@@ -1,16 +1,52 @@
 <?php
 include "Crud.php";
+include "Authenticator.php";
 include_once 'DBConnector.php';
-class User implements Crud{
-    private $user_id;
+class User implements Crud, Authenticator {
     private $first_name;
     private $last_name;
     private $city_name;
 
-    function __construct($first_name,$last_name,$city_name){
+    //new variables for login in
+    private $username;
+    private $password;
+
+    function __construct($first_name,$last_name,$city_name,$username,$password){//error of few arguments
         $this->first_name = $first_name;
         $this->last_name = $last_name;
         $this->city_name = $city_name;
+        $this->username = $username;
+        $this->password = $password;
+    }
+    //php doesn't allow multiple constructors so we are faking one.
+    /*public static function create(){
+        $instance = new self($first_name,$last_name,$city_name,$username,$password);//error few arguments got rid by adding them
+        return $instance;
+    }*/
+
+    public static function create() {
+        $reflection = new ReflectionClass("User");
+        $instance = $reflection->newInstanceWithoutConstructor();
+        return $instance;
+        //error occured here
+        //$instance = new self();
+        //return $instance;
+    }
+
+    public function setUsername(){
+        $this->username = $username;
+    }
+
+    public function getUsername(){
+        return $this->username;
+    }
+
+    public function setPassword(){
+        $this->password = $password;
+    }
+
+    public function getPassword(){
+        return $this->password;
     }
 
     public function setUserId($user_id){
@@ -27,7 +63,10 @@ class User implements Crud{
         $fn = $this->first_name;
         $ln = $this->last_name;
         $city = $this->city_name;
-        $res = mysqli_query($con->conn,"INSERT INTO user(first_name,last_name,user_city) VALUES('$fn','$ln','$city')") or die("Error ".mysqli_error($con->conn));
+        $uname = $this->username;
+        $this->hashPassword();//our function to hash the password
+        $pass = $this->password;
+        $res = mysqli_query($con->conn,"INSERT INTO user(first_name,last_name,user_city,username,password) VALUES('$fn','$ln','$city','$uname','$pass')") or die("Error ".mysqli_error($con->conn));
         $con->closeDatabase();
         return $res;
     }
@@ -62,6 +101,45 @@ class User implements Crud{
         session_start();
         $_SESSION['form_errors'] = "All fields are required";
         echo "Errrrrr";
+    }
+    public function hashPassword(){
+        //inbuilt function to hash passwords of users
+        $this->password = password_hash($this->password,PASSWORD_DEFAULT);
+    }
+
+    public function isPasswordCorrect(){
+        $con = new DBConnector;
+        //$found = false;
+        $res = mysqli_query($con->conn, "SELECT * FROM user") or die("Error" . mysqli_error($con->conn));
+
+        while(mysqli_fetch_array($res)){
+            if(password_verify($this->getPassword(), $row['password']) && $this->getUsername() == $row['username']){
+                //$found = true;
+                header("Location:lab1.php");
+            }
+        }
+        //close Database
+        $con->closeDatabase();
+       // return $found;// returns true if the password is correct
+    }
+
+    public function login(){
+        if($this->isPasswordCorrect()) {
+            //password is correct, so we load the protected page
+            header("Location:private_page.php");
+        }
+    }
+
+    public function createUserSession(){
+        session_start();
+        $_SESSION['username'] = $this->getUsername();
+    }
+
+    public function logout(){
+        session_start();
+        unset($_SESSION['username']);
+        session_destroy();
+        header("Location:lab1.php");//returns to sign up page when the user logs out
     }
 }
 
