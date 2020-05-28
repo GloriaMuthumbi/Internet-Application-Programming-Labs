@@ -33,7 +33,7 @@ class User implements Crud, Authenticator {
         //return $instance;
     }
 
-    public function setUsername(){
+    public function setUsername($username){
         $this->username = $username;
     }
 
@@ -41,7 +41,7 @@ class User implements Crud, Authenticator {
         return $this->username;
     }
 
-    public function setPassword(){
+    public function setPassword($password){
         $this->password = $password;
     }
 
@@ -50,11 +50,11 @@ class User implements Crud, Authenticator {
     }
 
     public function setUserId($user_id){
-        $this->user_id = user_id;
+        $this->user_id = $user_id;
     }
 
     public function getUserId(){
-        return $this->$user_id;
+        return $this->user_id;
     }
 
     public function save(){
@@ -100,7 +100,6 @@ class User implements Crud, Authenticator {
     public function createFormErrorSessions(){
         session_start();
         $_SESSION['form_errors'] = "All fields are required";
-        echo "Errrrrr";
     }
     public function hashPassword(){
         //inbuilt function to hash passwords of users
@@ -108,25 +107,62 @@ class User implements Crud, Authenticator {
     }
 
     public function isPasswordCorrect(){
-        $con = new DBConnector;
-        //$found = false;
-        $res = mysqli_query($con->conn, "SELECT * FROM user") or die("Error" . mysqli_error($con->conn));
 
-        while(mysqli_fetch_array($res)){
-            if(password_verify($this->getPassword(), $row['password']) && $this->getUsername() == $row['username']){
-                //$found = true;
-                header("Location:lab1.php");
+        $dbserver = 'localhost';
+        $dbname = 'btc3205';
+        $dbuser = 'root';
+        $dbpass = '';
+        $found = false;
+
+        try{
+            $conn = new PDO("mysql:host=$dbserver;dbname=$dbname", $dbuser, $dbpass);
+            try{
+                $stmt = $conn->prepare("SELECT password, username FROM user");
+                $stmt->execute();
+                $result = $stmt->fetchAll();
+                foreach($result as $row){
+                    if(password_verify($this->getPassword(),$row['password']) && $this->getUsername()==$row['username']){
+                        $found = true;
+                    }
+                }
+                $stmt=null;//closing the connection
+            }catch(Exception $e){
+                echo "An error occured: ".$e;
             }
+        }catch(PDOException $e){
+            echo "Error Occured: "+$e->getMessage();
         }
+        return $found;
+
+
+
+       /* $con = new DBConnector;
+        $found = false;
+       // $res = mysqli_query($con->conn, "SELECT * FROM user") or die("Error" . mysqli_error($con->conn));
+
+        if ($result = $con->conn -> query("SELECT * FROM user")) {
+            while ($row = $result -> fetch_row()) {
+              echo $row['first_name'];
+            }
+            $result -> free_result();
+          }
+    
+
+
+        /*while ($row = $res -> fetch_row()){
+            if(password_verify($this->getPassword(), $row['password']) && $this->getUsername() == $row['username']){
+                $found = true;
+               // header("Location:lab1.php");
+            }
         //close Database
         $con->closeDatabase();
-       // return $found;// returns true if the password is correct
+        return $found;returns true if the password is correct*/
     }
 
     public function login(){
-        if($this->isPasswordCorrect()) {
-            //password is correct, so we load the protected page
-            header("Location:private_page.php");
+        //password is correct, so we load the protected page
+        if($this->isPasswordCorrect()){
+            header("location:private_page.php");
         }
     }
 

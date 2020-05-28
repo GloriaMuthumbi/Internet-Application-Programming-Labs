@@ -10,23 +10,17 @@ if(isset($_POST['btn-login'])){
     $instance = User::create();
     $instance->setPassword($password);
     $instance->setUsername($username);
-    
-    /*if($instance->isPasswordCorrect()){
-        $instance->login();
-        $con->closeDatabase();
-        $instance->createUserSession();
-    }else{
-        $con->closeDatabase();
-        header("Location:login.php");
-    }*/
 
     if($instance->isPasswordCorrect()) {
         $instance->login();
         $con->closeDatabase();
         $instance->createUserSession();
+        //header("Location:lab1.php");
     } else {
         $con->closeDatabase();
-        header("Location:login.php");
+        echo $username;
+        echo $password;
+       header("Location:lab1.php");
     }
 }
 ?>
@@ -39,7 +33,7 @@ if(isset($_POST['btn-login'])){
     </head>
     <body>
     <!--'=$_SERVER['PHP_SELF']' means that we are submitting this form to itself for processing-->
-        <form method="post" name="login" id="login" action="<?=$_SERVER['PHP_SELF']?>">
+        <form method="post" name="login" id="login" action="<?php echo $_SERVER['PHP_SELF']?>">
             <table align="center">
                 <tr>
                     <td><input type="text" name="username" placeholder="Username" required/></td>
