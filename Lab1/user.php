@@ -3,6 +3,7 @@ include "Crud.php";
 include "Authenticator.php";
 include_once 'DBConnector.php';
 class User implements Crud, Authenticator {
+    private $conn;
     private $first_name;
     private $last_name;
     private $city_name;
@@ -57,7 +58,12 @@ class User implements Crud, Authenticator {
         return $this->user_id;
     }
 
+    public static function connection(\PDO $pdo){
+        $this->conn = $pdo;
+    }
+
     public function save(){
+
         $con = new DBConnector;
 
         $fn = $this->first_name;
@@ -108,55 +114,18 @@ class User implements Crud, Authenticator {
 
     public function isPasswordCorrect(){
 
-        $dbserver = 'localhost';
-        $dbname = 'btc3205';
-        $dbuser = 'root';
-        $dbpass = '';
-        $found = false;
+        $con = new DBConnector;
+        
+        $res = mysqli_query($con->conn,"SELECT password, username FROM user") or die("Error ".mysqli_error($con->conn));
 
-        try{
-            $conn = new PDO("mysql:host=$dbserver;dbname=$dbname", $dbuser, $dbpass);
-            try{
-                $stmt = $conn->prepare("SELECT password, username FROM user");
-                $stmt->execute();
-                $result = $stmt->fetchAll();
-                foreach($result as $row){
-                    if(password_verify($this->getPassword(),$row['password']) && $this->getUsername()==$row['username']){
-                        $found = true;
-                    }
-                }
-                $stmt=null;//closing the connection
-            }catch(Exception $e){
-                echo "An error occured: ".$e;
-            }
-        }catch(PDOException $e){
-            echo "Error Occured: "+$e->getMessage();
-        }
-        return $found;
-
-
-
-       /* $con = new DBConnector;
-        $found = false;
-       // $res = mysqli_query($con->conn, "SELECT * FROM user") or die("Error" . mysqli_error($con->conn));
-
-        if ($result = $con->conn -> query("SELECT * FROM user")) {
-            while ($row = $result -> fetch_row()) {
-              echo $row['first_name'];
-            }
-            $result -> free_result();
-          }
-    
-
-
-        /*while ($row = $res -> fetch_row()){
-            if(password_verify($this->getPassword(), $row['password']) && $this->getUsername() == $row['username']){
+        while($row = mysqli_fetch_assoc($res)){
+            if(password_verify($this->getPassword(),$row['password']) && $this->getUsername()==$row['username']){
+                mysqli_free_result($res);
                 $found = true;
-               // header("Location:lab1.php");
             }
-        //close Database
+        }
         $con->closeDatabase();
-        return $found;returns true if the password is correct*/
+        return $found;
     }
 
     public function login(){
@@ -169,6 +138,10 @@ class User implements Crud, Authenticator {
     public function createUserSession(){
         session_start();
         $_SESSION['username'] = $this->getUsername();
+    }
+
+    public function isUserExist(){
+        
     }
 
     public function logout(){

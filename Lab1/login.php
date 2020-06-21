@@ -15,12 +15,9 @@ if(isset($_POST['btn-login'])){
         $instance->login();
         $con->closeDatabase();
         $instance->createUserSession();
-        //header("Location:lab1.php");
     } else {
         $con->closeDatabase();
-        echo $username;
-        echo $password;
-       header("Location:lab1.php");
+       header("Location:login.php");
     }
 }
 ?>

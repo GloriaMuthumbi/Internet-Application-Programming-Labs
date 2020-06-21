@@ -2,6 +2,8 @@
 include_once 'DBConnector.php';
 include_once 'user.php';
 //data insert code starts here
+
+$con = new DBConnector;
 if(isset($_POST['btn-save'])){
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
@@ -18,13 +20,23 @@ if(isset($_POST['btn-save'])){
 		header("Refresh:0");
 		die();
     }
-    $res = $user->save();
+    //$res = $user->save();
 
-	//checks if the operation was successful
-    if($res){
-        echo"Save operation was successful";
+    $result = mysqli_query($con->conn,"SELECT * from user WHERE username='$username'") or die("Error ".mysqli_error($con->conn));
+
+    //$sql_u = "SELECT * from user WHERE username=$username";
+    //$result = mysqli_query($con,$sql_u);
+
+    if(mysqli_num_rows($result)>0){
+        echo "<div class=head1 style=\"color:#FF0000\" align=\"center\">Username Already Taken...</div>";
     }else{
-        echo"An error occured!";
+        $res = $user->save();
+	    //checks if the operation was successful
+        if($res){
+            echo "<div class=head1 style=\"color:#00FF00\" align=\"center\">Save operation was successful!</div>";
+        }else{
+            echo "<div class=head1 style=\"color:#FF0000\" align=\"center\">An error occured!</div>";
+        }
     }
 }
 ?>
@@ -64,11 +76,12 @@ if(isset($_POST['btn-save'])){
                 <td><input type="text" name="city_name" placeholder="City"/></td>
             </tr>
             <tr>
-                <td><input type="text" name="username" placeholder="Username"/></td>
+                <td><input type="text" name="username" placeholder="Username" /></td>
             </tr>
             <tr>
                 <td><input type="password" name="password" placeholder="Password"/></td>
             </tr>
+        
             <tr>
                 <td><button type="submit" name="btn-save"><strong>SAVE</strong></button></td>
             </tr>
