@@ -1,5 +1,6 @@
 <?php
 include_once 'DBConnector.php';
+include 'fileUploader.php';
 include_once 'user.php';
 //data insert code starts here
 
@@ -10,12 +11,14 @@ if(isset($_POST['btn-save'])){
     $city = $_POST['city_name'];
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $profilePhoto = $_POST['fileToUpload'];
 	
 	//create user object
 	/*Note the way we create our object using a constructor that
 	will be used to initialize our variables.*/
-	$user = new User($first_name,$last_name,$city,$username,$password);
-	if(!$user->valiteForm()){
+	$user = new User($first_name,$last_name,$city,$username,$password,$profilePhoto);
+    $uploader = new FileUploader;
+    if(!$user->valiteForm()){
 		$user->createFormErrorSessions();
 		header("Refresh:0");
 		die();
@@ -23,9 +26,8 @@ if(isset($_POST['btn-save'])){
     //$res = $user->save();
 
     $result = mysqli_query($con->conn,"SELECT * from user WHERE username='$username'") or die("Error ".mysqli_error($con->conn));
-
-    //$sql_u = "SELECT * from user WHERE username=$username";
-    //$result = mysqli_query($con,$sql_u);
+    //call the uploadFile function
+    $file_upload_response = $uploader->uploadFile();
 
     if(mysqli_num_rows($result)>0){
         echo "<div class=head1 style=\"color:#FF0000\" align=\"center\">Username Already Taken...</div>";
@@ -81,7 +83,9 @@ if(isset($_POST['btn-save'])){
             <tr>
                 <td><input type="password" name="password" placeholder="Password"/></td>
             </tr>
-        
+            <tr>
+                <td>Profile image:<input type="file" name="fileToUpload" id="fileToUpload"></td>
+            </tr>
             <tr>
                 <td><button type="submit" name="btn-save"><strong>SAVE</strong></button></td>
             </tr>

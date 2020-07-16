@@ -150,6 +150,7 @@ class User implements Crud, Authenticator {
         session_destroy();
         header("Location:lab1.php");//returns to sign up page when the user logs out
     }
+
 }
 
 
