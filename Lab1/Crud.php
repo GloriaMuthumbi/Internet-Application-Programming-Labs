@@ -11,8 +11,8 @@ interface Crud{
 	public function removeAll();
 
 	//added these methods for lab2
-	public function valiteForm();
-	public function createFormErrorSessions();
+	public function validateForm();
+	public function createFormErrorSessions($error);
 }
 
 ?>

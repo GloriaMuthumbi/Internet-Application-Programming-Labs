@@ -12,19 +12,18 @@ class User implements Crud, Authenticator {
     private $username;
     private $password;
 
-    function __construct($first_name,$last_name,$city_name,$username,$password){//error of few arguments
+    private $fileToUpload;
+
+   function __construct($first_name,$last_name,$city_name,$username,$password){//error of few arguments
         $this->first_name = $first_name;
         $this->last_name = $last_name;
         $this->city_name = $city_name;
         $this->username = $username;
         $this->password = $password;
+        $this->fileToUpload = $fileToUpload;
     }
-    //php doesn't allow multiple constructors so we are faking one.
-    /*public static function create(){
-        $instance = new self($first_name,$last_name,$city_name,$username,$password);//error few arguments got rid by adding them
-        return $instance;
-    }*/
 
+    //creates a new user
     public static function create() {
         $reflection = new ReflectionClass("User");
         $instance = $reflection->newInstanceWithoutConstructor();
@@ -33,6 +32,33 @@ class User implements Crud, Authenticator {
         //$instance = new self();
         //return $instance;
     }
+
+    public function setFirstName($first_name)
+	{
+		$this->first_name = $first_name;
+	}
+	public function getFirstName()
+	{
+		return $this->first_name;
+	}
+
+	public function setLastName($last_name)
+	{
+		$this->last_name = $last_name;
+	}
+	public function getLastName()
+	{
+		return $this->last_name;
+	}
+
+	public function setCityName($city_name)
+	{
+		$this->city_name = $city_name;
+	}
+	public function getCityName()
+	{
+		return $this->city_name;
+	}
 
     public function setUsername($username){
         $this->username = $username;
@@ -49,6 +75,15 @@ class User implements Crud, Authenticator {
     public function getPassword(){
         return $this->password;
     }
+
+    public function setProfilePic($pic)
+	{
+		$this->pic = $pic;
+	}
+	public function getProfilePic()
+	{
+		return $this->pic;
+	}
 
     public function setUserId($user_id){
         $this->user_id = $user_id;
@@ -93,19 +128,21 @@ class User implements Crud, Authenticator {
     }public function removeAll(){
         return null;
     }
-    public function valiteForm(){
+    public function validateForm(){
         //returns true if the values are not empty
         $fn = $this->first_name;
         $ln = $this->last_name;
         $city = $this->city_name;
-        if($fn == "" || $ln == "" || $city == ""){
+        $uname = $this->username;
+        $pass = $this->password;
+        if($fn == "" || $ln == "" || $city == "" || $uname == "" || $pass == ""){
             return false;
         }
         return true;
     }
-    public function createFormErrorSessions(){
+    public function createFormErrorSessions($error){
         session_start();
-        $_SESSION['form_errors'] = "All fields are required";
+        $_SESSION['form_errors'] = $error;
     }
     public function hashPassword(){
         //inbuilt function to hash passwords of users
@@ -141,7 +178,19 @@ class User implements Crud, Authenticator {
     }
 
     public function isUserExist(){
-        
+        $con = new DBConnector;
+
+		$res = mysqli_query($con->conn, "SELECT * FROM user") or die("Error: ".$con->conn->error);
+
+		$con->closeDatabase();
+
+		while ($row = $res->fetch_assoc()) {
+			if ($this->username == $row['username']) {
+				return true;
+			}
+		}
+		return false;
+
     }
 
     public function logout(){
@@ -152,6 +201,5 @@ class User implements Crud, Authenticator {
     }
 
 }
-
 
 ?>
