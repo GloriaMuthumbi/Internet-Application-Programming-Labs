@@ -13,13 +13,16 @@ if (isset($_POST['btn-save'])) {
 	$username = $_POST['username'];
 	$password = $_POST['password'];
 
+	$utc_timestamp = $_POST['utc_timestamp'];
+	$offset = $_POST['time_zone_offset'];
+
 	$file_size = $_FILES["fileToUpload"]["size"];
 	$target_directory = "uploads/";
 	$file_original_name = $_FILES["fileToUpload"]["name"];
 	$file_temp_name = $_FILES["fileToUpload"]["tmp_name"];
 
 	$uploader = new FileUploader($file_temp_name);
-	$user = new User($first_name,$last_name,$city_name,$username,$password);
+	$user = new User($first_name,$last_name,$city_name,$username,$password,$utc_timestamp,$offset);
 
 	$uploader->setOriginalName($file_original_name);
 	$uploader->setFileSize($file_size);
@@ -39,6 +42,8 @@ if (isset($_POST['btn-save'])) {
 	$user->setPassword($password);
 	$user->setProfilePic($pic);
 
+	$user->setUtcTimestamp($utc_timestamp);
+	$user->setTimeZoneOffset($offset);
 
 
 	if (!$user->validateForm()) {
@@ -77,6 +82,10 @@ if (isset($_POST['btn-save'])) {
     <meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="validate.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="timezone.js"></script>
+
     <title>Sign Up</title>
 </head>
 <body><!--Mumo added the = sign before server and removed the required from the html tags to remove html validation.-->
@@ -99,6 +108,9 @@ if (isset($_POST['btn-save'])) {
 		<div><input type="password" name="password" placeholder="password..."></div>
 		<div><label for="fileToUpload">Profile image:</label><input type="file" name="fileToUpload" id="fileToUpload"></div>
 		<div><button type="submit" name="btn-save"><strong>SAVE</strong></button></div>
+
+		<input type="hidden" name="utc_timestamp" id="utc_timestamp" value=""/>
+		<input type="hidden" name="time_zone_offset" id="time_zone_offset" value=""/>
 		<div><a href="login.php">Login</a></div>
     </form>
 	<script type="text/javascript" src="validate.js"></script>

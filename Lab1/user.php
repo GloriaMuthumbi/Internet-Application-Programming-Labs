@@ -14,6 +14,9 @@ class User implements Crud, Authenticator {
 
     private $fileToUpload;
 
+    private $utc_timestamp;
+    private $offset;
+
    function __construct($first_name,$last_name,$city_name,$username,$password){//error of few arguments
         $this->first_name = $first_name;
         $this->last_name = $last_name;
@@ -93,9 +96,23 @@ class User implements Crud, Authenticator {
         return $this->user_id;
     }
 
-    public static function connection(\PDO $pdo){
-        $this->conn = $pdo;
-    }
+    public function setUtcTimestamp($utc_timestamp)
+	{
+		$this->utc_timestamp = $utc_timestamp;
+	}
+	public function getUtcTimestamp()
+	{
+		return $this->utc_timestamp;
+	}
+
+	public function setTimeZoneOffset($offset)
+	{
+		$this->offset = $offset;
+	}
+	public function getTimeZoneOffset()
+	{
+		return $this->offset;
+	}
 
     public function save(){
 
@@ -107,7 +124,10 @@ class User implements Crud, Authenticator {
         $uname = $this->username;
         $this->hashPassword();//our function to hash the password
         $pass = $this->password;
-        $res = mysqli_query($con->conn,"INSERT INTO user(first_name,last_name,user_city,username,password) VALUES('$fn','$ln','$city','$uname','$pass')") or die("Error ".mysqli_error($con->conn));
+        $pic = $this->fileToUpload;
+        $utc_timestamp = $this->utc_timestamp;
+        $offset = $this->offset;
+        $res = mysqli_query($con->conn,"INSERT INTO user(first_name,last_name,user_city,username,password,fileToUpload,utc_timestamp,time_zone_offset) VALUES('$fn','$ln','$city','$uname','$pass','$pic','$utc_timestamp','$offset')") or die("Error ".mysqli_error($con->conn));
         $con->closeDatabase();
         return $res;
     }
