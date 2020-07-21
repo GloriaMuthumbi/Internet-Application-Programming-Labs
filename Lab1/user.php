@@ -29,12 +29,12 @@ class User implements Crud, Authenticator {
 
     //creates a new user
     public static function create() {
-        $reflection = new ReflectionClass("User");
+        /*$reflection = new ReflectionClass("User");
         $instance = $reflection->newInstanceWithoutConstructor();
-        return $instance;
+        return $instance;*/
         //error occured here
-        //$instance = new self();
-        //return $instance;
+        $instance = new self();
+        return $instance;
     }
 
     public function setFirstName($first_name)
@@ -173,7 +173,7 @@ class User implements Crud, Authenticator {
 
         $con = new DBConnector;
         
-        $res = mysqli_query($con->conn,"SELECT password, username FROM user") or die("Error ".mysqli_error($con->conn));
+        $res = mysqli_query($con->conn,"SELECT * FROM user") or die("Error ".mysqli_error($con->conn));
 
         while($row = mysqli_fetch_assoc($res)){
             if(password_verify($this->getPassword(),$row['password']) && $this->getUsername()==$row['username']){
