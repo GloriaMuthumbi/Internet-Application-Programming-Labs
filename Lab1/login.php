@@ -17,6 +17,7 @@ if(isset($_POST['btn-login'])){
         $instance->createUserSession();
     } else {
         $con->closeDatabase();
+        $instance->createFormErrorSessions("Username or Password is incorrect.");
        header("Location:login.php");
     }
 }

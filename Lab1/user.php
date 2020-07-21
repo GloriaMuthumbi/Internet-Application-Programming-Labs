@@ -33,7 +33,7 @@ class User implements Crud, Authenticator {
         $instance = $reflection->newInstanceWithoutConstructor();
         return $instance;*/
         //error occured here
-        $instance = new self();
+        $instance = new self($first_name,$last_name,$city_name,$username,$password,$fileToUpload);
         return $instance;
     }
 

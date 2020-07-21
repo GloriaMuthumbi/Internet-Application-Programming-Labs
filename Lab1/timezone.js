@@ -4,6 +4,6 @@ $(document).ready(function(){
     //returns the number of mssince 1970/01/01
     var utc_timestamp = timestamp + (60000 * offset);
 
-    $('$time_zone_offset').val(offset);
-    $('$utc_timestamp').val(utc_timestamp);
+    $('$time_zone_offset').val(offset);//assigning the offset var a value
+    $('$utc_timestamp').val(utc_timestamp);//assigning the utc_timestamp var a value
 });
