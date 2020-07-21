@@ -17,13 +17,14 @@ class User implements Crud, Authenticator {
     private $utc_timestamp;
     private $offset;
 
-   function __construct($first_name,$last_name,$city_name,$username,$password){//error of few arguments
+   function __construct($first_name,$last_name,$city_name,$username,$password,$fileToUpload){//error of few arguments
         $this->first_name = $first_name;
         $this->last_name = $last_name;
         $this->city_name = $city_name;
         $this->username = $username;
         $this->password = $password;
         $this->fileToUpload = $fileToUpload;
+
     }
 
     //creates a new user
@@ -125,10 +126,9 @@ class User implements Crud, Authenticator {
         $this->hashPassword();//our function to hash the password
         $pass = $this->password;
         $pic = $this->fileToUpload;
-        $utc_timestamp = $this->utc_timestamp;
+        $user_timestamp = $this->utc_timestamp;
         $offset = $this->offset;
-        $res = mysqli_query($con->conn,"INSERT INTO user(first_name,last_name,user_city,username,password,fileToUpload,utc_timestamp,time_zone_offset) VALUES('$fn','$ln','$city','$uname','$pass','$pic','$utc_timestamp','$offset')") or die("Error ".mysqli_error($con->conn));
-        $con->closeDatabase();
+        $res = mysqli_query($con->conn,"INSERT INTO user(first_name,last_name,user_city,username,password,fileToUpload) VALUES('$fn','$ln','$city','$uname','$pass','$pic')") or die("Error ".mysqli_error($con->conn));
         return $res;
     }
     public static function readAll(){

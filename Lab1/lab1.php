@@ -21,8 +21,10 @@ if (isset($_POST['btn-save'])) {
 	$file_original_name = $_FILES["fileToUpload"]["name"];
 	$file_temp_name = $_FILES["fileToUpload"]["tmp_name"];
 
+	$fileToUpload = addslashes(file_get_contents($_FILES["fileToUpload"]["tmp_name"]));
+
 	$uploader = new FileUploader($file_temp_name);
-	$user = new User($first_name,$last_name,$city_name,$username,$password,$utc_timestamp,$offset);
+	$user = new User($first_name,$last_name,$city_name,$username,$password,$fileToUpload);
 
 	$uploader->setOriginalName($file_original_name);
 	$uploader->setFileSize($file_size);
@@ -113,7 +115,7 @@ if (isset($_POST['btn-save'])) {
 		<input type="hidden" name="time_zone_offset" id="time_zone_offset" value=""/>
 		<div><a href="login.php">Login</a></div>
     </form>
-	<script type="text/javascript" src="validate.js"></script>
+	<!--<script type="text/javascript" src="validate.js"></script>-->
 </body>
 </html>
 <!--ALTER TABLE tablename ADD(colname coltype,....) adds more fields to the database-->
