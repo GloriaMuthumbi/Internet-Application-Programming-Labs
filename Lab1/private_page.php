@@ -1,5 +1,5 @@
 <?php
-include "DBConnector.php";
+include_once "DBConnector.php";
     session_start();
     if(!isset($_SESSION['username'])){
         header("Location:login.php");
@@ -53,7 +53,7 @@ include "DBConnector.php";
         <button class="btn btn-primary" id="api-key-btn"> Generate APi key</button><br><br>
         <!--This text area will hold the API key-->
         <strong>Your API key: </strong>(Note that if your API key is already is already in use by an already running applications, generation a new key will stop the application from funtioning)<br>
-        <textarea cols="100" row="2" id="api_key" name="api_key" readonly><?php echo fetchUserApiKey();?></textarea>
+        <textarea cols="100" row="2" id="api_key" name="api_key" readonly><?php echo fetchUserApiKey(); ?></textarea>
 
         <h3>Service description</h3>
         We have a service/API that allows external applications to order food and also

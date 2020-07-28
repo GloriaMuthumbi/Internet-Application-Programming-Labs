@@ -91,7 +91,7 @@ if (isset($_POST['btn-save'])) {
     <title>Sign Up</title>
 </head>
 <body><!--Mumo added the = sign before server and removed the required from the html tags to remove html validation.-->
-    <form method="post" name="user_details" id="user_details" onsubmit="return validateForm()" enctype="multipart/form-data" action="<?=$_SERVER['PHP_SELF']?>">
+    <form method="post" align="center" name="user_details" id="user_details" onsubmit="return validateForm()" enctype="multipart/form-data" action="<?=$_SERVER['PHP_SELF']?>">
         <div id="form-errors">
 			<?php 
 			session_start();

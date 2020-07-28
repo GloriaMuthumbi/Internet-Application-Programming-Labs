@@ -1,15 +1,14 @@
 <?php
 include_once 'DBConnector.php';
-include
 
-if($_SERVER['REQUEST_METHOD'] !== 'POST'){
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
     //don't allow users to visit this page via a url
     header('HTTP/1.0 403 Forbidden');
     echo 'You are forbidden from viewing this page!';
 }else{
     $api_key = null;
-    $api_key = generateApiKey(64)//generate an API key characters long
-    header('Content-type: application/json');
+    $api_key = generateApiKey(64);//generate an API key characters long
+    header("Content-type: application/json");
     //our response if a json is one
     echo generateResponse($api_key);
 }
@@ -28,14 +27,14 @@ function generateApiKey($str_length){
 
     return strtr(substr(base64_encode($bytes),0,$str_length),'+/',"$first$second");
 }
-function saveApiKey(){
+function saveApiKey($api_key){
     session_start();
     $con = new DBConnector();
     $user = $_SESSION['username'];
     $query = mysqli_query($con->conn, "SELECT * FROM user WHERE username='$user'");
     $array = $query->fetch_assoc();
     $user_id = $array['id'];
-    $saved = mysqli_query($con->conn, "INSERT INTO api_keys(user_id,api_key) VALUES('$user_id,'$api_key')") or die(mysqli_error($con->conn));
+    $saved = mysqli_query($con->conn, "INSERT INTO api_keys(user_id,api_key) VALUES('$user_id','$api_key')") or die(mysqli_error($con->conn));
 
     if($saved === true){
         return true;
@@ -45,8 +44,8 @@ function saveApiKey(){
 }
 
 function generateResponse($api_key){
-    if($saveApiKey()){
-        $res = ['success' => 1, 'message' = >$api_key];
+    if(saveApiKey($api_key)){
+        $res = ['success' => 1, 'message' => $api_key];
     }else{
         $res = ['success' => 0, 'message' => 'Something went wrong, Please regenerate the API key'];
     }
