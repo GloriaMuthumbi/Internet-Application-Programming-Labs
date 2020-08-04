@@ -48,7 +48,10 @@ class ApiHandler{
     }
 
     public function checkOrderStatus(){
+        $con = new DBConnector();
+		$order = mysqli_query($con->conn, "SELECT * FROM orders WHERE order_id = '$id' ")->fetch_assoc();
 
+		return $order['order_status'];
     }
     public function fetchAllOrders(){
 
