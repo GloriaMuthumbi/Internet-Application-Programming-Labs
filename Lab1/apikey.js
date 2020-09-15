@@ -9,11 +9,11 @@ $(document).ready(function(){
             url:"ApiKey.php",
             type: "post",
             success: function(data){
-                if(dta['success'] == 1){
+                if(data['success'] == 1){
                     //if everything went fine, set the key in the text area
                     $('#api_key').val(data['message']);
                 }else{
-                    alert("Something went wrond. Please try again");
+                    alert("Something went wrong. Please try again");
                 }
             }
         });

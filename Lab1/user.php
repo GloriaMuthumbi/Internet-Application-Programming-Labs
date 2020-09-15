@@ -128,7 +128,7 @@ class User implements Crud, Authenticator {
         $pic = $this->fileToUpload;
         $user_timestamp = $this->utc_timestamp;
         $offset = $this->offset;
-        $res = mysqli_query($con->conn,"INSERT INTO user(first_name,last_name,user_city,username,password,fileToUpload) VALUES('$fn','$ln','$city','$uname','$pass','$pic')") or die("Error ".mysqli_error($con->conn));
+        $res = mysqli_query($con->conn,"INSERT INTO user(first_name,last_name,user_city,username,password,fileToUpload,user_utc_timestamp,user_offset) VALUES('$fn','$ln','$city','$uname','$pass','$pic','$user_timestamp','$offset')") or die("Error ".mysqli_error($con->conn));
         return $res;
     }
     public static function readAll(){
