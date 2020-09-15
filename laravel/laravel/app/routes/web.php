@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,6 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/car','app\Http\Controllers\CarController@index');
+Route::get('/car',['uses' => 'app\Http\Controllers\CarController@allcars']);
 Route::get('/car/{id}','CarController@particularcar');
 Route::post('/car','CarController@newcar');

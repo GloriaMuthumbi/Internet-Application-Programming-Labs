@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
-    //
     public function allcars(){
         //read allcars
+        return Car::all();
     }
 
     public function particularcar($id){
