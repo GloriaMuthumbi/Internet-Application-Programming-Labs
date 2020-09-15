@@ -1,14 +1,14 @@
 <?php
 include_once 'DBConnector.php';
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
+if($_SERVER['REQUEST_METHOD'] !== 'POST'){
     //don't allow users to visit this page via a url
     header('HTTP/1.0 403 Forbidden');
     echo 'You are forbidden from viewing this page!';
 }else{
     $api_key = null;
     $api_key = generateApiKey(64);//generate an API key characters long
-    header("Content-type: application/json");
+    header("Content-type: application/json;");
     //our response if a json is one
     echo generateResponse($api_key);
 }
@@ -33,7 +33,7 @@ function saveApiKey($api_key){
     $user = $_SESSION['username'];
     $query = mysqli_query($con->conn, "SELECT * FROM user WHERE username='$user'");
     $array = $query->fetch_assoc();
-    $user_id = $array['id'];
+    $user_id = $array['user_id'];
     $saved = mysqli_query($con->conn, "INSERT INTO api_keys(user_id,api_key) VALUES('$user_id','$api_key')") or die(mysqli_error($con->conn));
 
     if($saved === true){
